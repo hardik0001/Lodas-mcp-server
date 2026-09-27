@@ -1,0 +1,211 @@
+<mxfile host="Electron">
+  <diagram id="datev-mcp-arch" name="Architecture">
+    <mxGraphModel dx="4176" dy="2652" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="client" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#000000;fontSize=10;" value="&lt;b&gt;CLIENT (Orchestrator LLM)&lt;/b&gt;&lt;div&gt;&lt;b&gt;1.&lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;decides business intent&amp;nbsp;&amp;nbsp;&lt;/span&gt;&lt;div&gt;2.calls MCP tools with structured args&lt;br&gt;&lt;br&gt;&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="320" x="667" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="mcp" parent="1" style="swimlane;startSize=28;fontFamily=Helvetica;fontSize=11;fontStyle=1;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#000000;" value="MCP Server — datev_mcp&amp;nbsp;" vertex="1">
+          <mxGeometry height="500" width="1260" x="200" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="g_set" parent="mcp" style="swimlane;startSize=22;fontFamily=Helvetica;fontSize=10;fontStyle=1;html=1;rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#000000;" value="tools ( never save )" vertex="1">
+          <mxGeometry height="150" width="600" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t_commute" parent="g_set" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#006EAF;fontColor=#ffffff;strokeColor=#005885;fontSize=10;" value="&lt;b&gt;commute parameters&lt;/b&gt;&lt;br&gt;distance_km, work_days_per_month, usage_frequency, usage_end, flat_rate_tax" vertex="1">
+          <mxGeometry height="50" width="285" x="10" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="t_subsidy" parent="g_set" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#006EAF;fontColor=#ffffff;strokeColor=#005885;fontSize=10;" value="&lt;b&gt;travel subsidy&lt;/b&gt;&lt;br&gt;cash allowance,&lt;div&gt;&amp;nbsp;job ticket, tax_treatment,&amp;nbsp;&lt;/div&gt;&lt;div&gt;flat rate flags…&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="285" x="305" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="t_car" parent="g_set" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#006EAF;fontColor=#ffffff;strokeColor=#005885;fontSize=10;" value="&lt;b&gt;company car&lt;/b&gt;&lt;br&gt;usage_frequency, private_use, commute_billing, distance_km, trips…" vertex="1">
+          <mxGeometry height="50" width="285" x="10" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="t_salary" parent="g_set" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#006EAF;fontColor=#ffffff;strokeColor=#005885;fontSize=10;" value="&lt;b&gt;salary details&lt;/b&gt;&lt;br&gt;iban, amount_eur, cycle, valid_from/until, partial-month" vertex="1">
+          <mxGeometry height="50" width="285" x="305" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="g_ctl" parent="mcp" style="swimlane;startSize=22;fontFamily=Helvetica;fontSize=10;fontStyle=1;html=1;rounded=1;fillColor=#b0e3e6;strokeColor=#0e8088;fontColor=#000000;" value="Session / read / commit tools" vertex="1">
+          <mxGeometry height="150" width="620" x="630" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="t_nav" parent="g_ctl" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#0e8088;fontColor=#ffffff;strokeColor=#0a5f65;fontSize=10;" value="&lt;b&gt;navigate to employee&lt;/b&gt;&lt;div&gt;&lt;b&gt;&lt;br&gt;&lt;/b&gt;personnel&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(255, 255, 255), rgb(18, 18, 18));&quot;&gt;number&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="295" x="10" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="t_read" parent="g_ctl" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#0e8088;fontColor=#ffffff;strokeColor=#0a5f65;fontSize=10;" value="&lt;b&gt;read current values&lt;/b&gt;&amp;nbsp;&lt;br&gt;commute | travel_subsidy | company_car | all" vertex="1">
+          <mxGeometry height="50" width="295" x="315" y="32" as="geometry" />
+        </mxCell>
+        <mxCell id="t_save" parent="g_ctl" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#0e8088;fontColor=#ffffff;strokeColor=#0a5f65;fontSize=10;" value="&lt;b&gt;save and confirm&lt;/b&gt;&lt;br&gt;clicks save" vertex="1">
+          <mxGeometry height="50" width="295" x="10" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="t_status" parent="g_ctl" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#0e8088;fontColor=#ffffff;strokeColor=#0a5f65;fontSize=10;" value="&lt;b&gt;session status&lt;/b&gt;&amp;nbsp;&lt;div&gt;·&lt;div&gt;window exist&lt;/div&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="295" x="315" y="92" as="geometry" />
+        </mxCell>
+        <mxCell id="v1" parent="mcp" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b46504;fontSize=10;align=left;spacingLeft=6;" value="&lt;b&gt;Layer 1 — structural&lt;/b&gt;&lt;br&gt;checks type hints;&amp;nbsp;&lt;div&gt;wrong type / missing arg rejected before the function body runs&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="230" x="10" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="v2" parent="mcp" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b46504;fontSize=10;align=left;spacingLeft=6;" value="&lt;b&gt;Layer 2 — Business Logic&lt;/b&gt;&lt;br&gt;validate: ranges, IBAN mod-97, MM/YYYY, usage_end not in past&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="300" x="260" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="goal" parent="mcp" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b46504;fontSize=10;align=left;spacingLeft=6;" value="&lt;b&gt;Goal prompt builder&lt;/b&gt; (per tool)&lt;br&gt;tree path + exact field values&lt;br&gt;read back as JSON with these keys ·&lt;div&gt;&amp;nbsp;do NOT save&lt;br&gt;expected dict kept for verification&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="260" x="580" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="dec" parent="mcp" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=10;fontFamily=Helvetica;" value="result&lt;br&gt;.success?" vertex="1">
+          <mxGeometry height="80" width="100" x="740" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="verify" parent="mcp" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#d79b00;fontColor=#ffffff;strokeColor=#b46504;fontSize=10;align=left;spacingLeft=6;" value="&lt;b&gt;verify_readback()&lt;/b&gt;&lt;br&gt;expected vs read-back JSON, per field&lt;br&gt;normalises “29,00”=29, Ja/Nein=bool, whitespace; skips empty expected" vertex="1">
+          <mxGeometry height="80" width="190" x="870" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="resp" parent="mcp" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#000000;fontSize=10;" value="&lt;b&gt;Tool response JSON&lt;/b&gt;&lt;br&gt;success ,&amp;nbsp;&lt;div&gt;values after verification,&amp;nbsp;&lt;/div&gt;&lt;div&gt;warnings,&lt;/div&gt;&lt;div&gt;&amp;nbsp;screenshot,&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;trace_id&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="170" x="1080" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="mismatch" parent="mcp" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#333333;fontFamily=Helvetica;fontSize=9;" value="all_match:false → per-field mismatches&lt;br&gt;no auto-retry · orchestrator decides" vertex="1">
+          <mxGeometry height="48" width="190" x="870" y="425" as="geometry" />
+        </mxCell>
+        <mxCell id="e_v1v2" edge="1" parent="mcp" source="v1" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b46504;" target="v2" value="ok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_v2goal" edge="1" parent="mcp" source="v2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b46504;" target="goal" value="ok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dec_ok" edge="1" parent="mcp" source="dec" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b46504;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="verify" value="true">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dec_fail" edge="1" parent="mcp" source="dec" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#AE4132;dashed=1;dashPattern=6 3;fontColor=#AE4132;exitX=0.5;exitY=0;entryX=0.5;entryY=0;" target="resp" value="false → error, screenshot, trace_id">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="315" />
+              <mxPoint x="1165" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ver_resp" edge="1" parent="mcp" source="verify" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#82b366;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="resp" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ver_mm" edge="1" parent="mcp" source="verify" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#AE4132;dashed=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="mismatch" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_call" edge="1" parent="1" source="client" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#006EAF;fontStyle=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="mcp" value="MCP tool call">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_valfail" edge="1" parent="1" source="v2" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#AE4132;dashed=1;dashPattern=6 3;fontColor=#AE4132;exitX=0.5;exitY=1;entryX=0;entryY=0.25;" target="client" value="validation error → {success:false, error:&amp;quot;validation&amp;quot;, details} · no computer-use session started">
+          <mxGeometry relative="1" x="0.0019" y="148" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="610" y="605" />
+              <mxPoint x="110" y="605" />
+              <mxPoint x="110" y="15" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_resp_client" edge="1" parent="1" source="resp" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#00875A;dashed=1;dashPattern=8 4;fontStyle=1;fontColor=#00875A;exitX=1;exitY=0.5;entryX=1;entryY=0.75;" target="client" value="JSON result">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1490" y="500" />
+              <mxPoint x="1490" y="45" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cu" parent="1" style="swimlane;startSize=28;fontFamily=Helvetica;fontSize=11;fontStyle=1;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontColor=light-dark(#000000,#009900);" value="Computer-Use Executor" vertex="1">
+          <mxGeometry height="461" width="1260" x="212" y="666" as="geometry" />
+        </mxCell>
+        <mxCell id="config" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;align=left;spacingLeft=6;" value="DATEV_COMPUTER_USE_PROVIDER&lt;br&gt;DATEV_MAX_STEPS = 20&lt;br&gt;DATEV_TIMEOUT_S = 120&lt;br&gt;DATEV_ANTHROPIC_MAX_DIM = 1280&lt;br&gt;DATEV_TARGET_WINDOW_TITLE" vertex="1">
+          <mxGeometry height="170" width="230" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="run" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333333;fontSize=10;align=left;spacingLeft=6;" value="&lt;b&gt;DATEVWorker(goal, action_id, tool_name)&lt;/b&gt;&lt;br&gt;1. focus window(TARGET WINDOW TITLE) if set&amp;nbsp;&lt;br&gt;2. get screen size&lt;br&gt;3. new TraceRecorder&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="170" width="230" x="260" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="prov" parent="cu" style="swimlane;startSize=18;fontFamily=Helvetica;fontSize=10;fontStyle=1;html=1;rounded=1;fillColor=#fad7ac;strokeColor=#b46504;fontColor=#000000;" value="&amp;nbsp;Worker Result&amp;nbsp;" vertex="1">
+          <mxGeometry height="170" width="248" x="650" y="46" as="geometry" />
+        </mxCell>
+        <mxCell id="p_anth" parent="prov" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333333;fontSize=10;" value="LLm&lt;br&gt;&lt;br&gt;&lt;br&gt;screenshot downscaled to MAX DIM&amp;nbsp;" vertex="1">
+          <mxGeometry height="132" width="165" x="38" y="29" as="geometry" />
+        </mxCell>
+        <mxCell id="readback" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=10;" value="&lt;b&gt;Model read-back (same session)&lt;/b&gt;&lt;br&gt;SYSTEM_PROMPT: fill all fields, one final read-back pass, reply with JSON as last line; stop &amp;amp; describe on unexpected dialogs; never save unless asked&lt;br&gt;extract_json() parses final message&amp;nbsp;" vertex="1">
+          <mxGeometry height="175" width="230" x="10" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="loop" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333333;fontSize=10;" value="&lt;b&gt;Loop&lt;/b&gt;: screenshot → model → tool_use → execute → sleep 0.3s → screenshot&lt;br&gt;ends when model returns no tool use ( success)&lt;br&gt;guards: step ≥ max_steps · elapsed &amp;gt; timeout · API error (success(false))" vertex="1">
+          <mxGeometry height="85" width="380" x="243" y="243" as="geometry" />
+        </mxCell>
+        <mxCell id="-UhrF83MREWQneIHRdyd-14" edge="1" parent="cu" source="actions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="actions" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#333333;fontSize=10;" value="&lt;b&gt;execute(action)&lt;/b&gt;&amp;nbsp;&lt;br&gt;re-focus target window before every actionx&lt;br&gt;click / type via pyautogui or Win32 SendInput · key, scroll, drag via pyautogui · mss screenshots" vertex="1">
+          <mxGeometry height="85" width="280" x="671" y="331" as="geometry" />
+        </mxCell>
+        <mxCell id="audit" parent="cu" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10;" value="&lt;b&gt;TraceRecorder&lt;/b&gt; (audit/logger.py)&lt;br&gt;log_step(action, screenshot, text)&lt;br&gt;finish() → trace.json" vertex="1">
+          <mxGeometry height="70" width="190" x="290" y="351" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cfg_run" edge="1" parent="cu" source="config" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#666666;dashed=1;" target="run" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_run_prov" edge="1" parent="cu" source="run" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b85450;" target="prov" value="dispatch">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_prov_loop" edge="1" parent="cu" source="prov" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b85450;exitX=0.25;exitY=1;entryX=0.842;entryY=0;" target="loop" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_loop_act" edge="1" parent="cu" source="loop" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b85450;" target="actions" value="execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_loop_audit" edge="1" parent="cu" source="loop" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#666666;exitX=0.25;exitY=1;entryX=0.5;entryY=0;" target="audit" value="log_step">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_wr_dec" edge="1" parent="cu" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#00875A;dashed=1;dashPattern=8 4;fontStyle=1;fontColor=#00875A;entryX=0.5;entryY=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" target="dec" value="WorkerResult">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="899" y="139.56" />
+              <mxPoint x="948" y="139.56" />
+              <mxPoint x="948" y="142.56" />
+              <mxPoint x="1162" y="142.56" />
+              <mxPoint x="1162" y="37" />
+              <mxPoint x="941" y="37" />
+              <mxPoint x="941" y="-19.44" />
+              <mxPoint x="720" y="-19.44" />
+              <mxPoint x="720" y="-128" />
+            </Array>
+            <mxPoint x="899" y="88.49999999999955" as="sourcePoint" />
+            <mxPoint x="720" y="-128" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-UhrF83MREWQneIHRdyd-17" connectable="0" parent="e_wr_dec" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=light-dark(#000000,#00FF00);labelBackgroundColor=light-dark(default, #0c120c);" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;b style=&quot;font-size: 10px; white-space: normal;&quot;&gt;WorkerResult&lt;/b&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;success&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;description (final text)&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;values (parsed JSON)&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;final_screenshot&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;error&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;steps_taken&lt;/span&gt;&lt;br style=&quot;font-size: 10px; white-space: normal;&quot;&gt;&lt;span style=&quot;font-size: 10px; white-space: normal;&quot;&gt;trace_id&lt;/span&gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry relative="1" x="-0.5289" y="3" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-UhrF83MREWQneIHRdyd-18" connectable="0" parent="e_wr_dec" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="Text" vertex="1">
+          <mxGeometry relative="1" x="-0.5775" y="-8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_goal_run" edge="1" parent="1" source="goal" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#b46504;fontStyle=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="run" value="goal prompt → DATEVWorker.run()">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="690" />
+              <mxPoint x="575" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="datev" parent="1" style="swimlane;startSize=28;fontFamily=Helvetica;fontSize=11;fontStyle=1;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontColor=#000000;" value="Target UI" vertex="1">
+          <mxGeometry height="110" width="1260" x="197" y="1215" as="geometry" />
+        </mxCell>
+        <mxCell id="datev_app" parent="datev" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#b85450;fontColor=#ffffff;strokeColor=#6c3b3b;fontSize=11;" value="&lt;b&gt;DATEV LODAS — Windows desktop app&lt;/b&gt;&lt;br&gt;Personnel Data › Compensation: Commute · Commute Allowance · Company Car · Salary" vertex="1">
+          <mxGeometry height="60" width="700" x="343" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="e_input" edge="1" parent="1" source="actions" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#333333;fontStyle=1;exitX=0.286;exitY=1;entryX=0.587;entryY=0;" target="datev" value="mouse / keyboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_shots" edge="1" parent="1" source="datev" style="edgeStyle=orthogonalEdgeStyle;html=1;rounded=0;fontFamily=Helvetica;fontSize=10;labelBackgroundColor=#ffffff;strokeColor=#00875A;dashed=1;dashPattern=8 4;fontStyle=1;fontColor=#00875A;exitX=0.683;exitY=0;entryX=0.714;entryY=1;" target="actions" value="mss screenshots">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-UhrF83MREWQneIHRdyd-21" edge="1" parent="1" source="mismatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fillColor=#e51400;strokeColor=#B20000;" target="client">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1537.76" y="579.06" />
+              <mxPoint x="1537.76" y="-30" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
