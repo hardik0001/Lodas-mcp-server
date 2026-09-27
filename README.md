@@ -1,8 +1,7 @@
 # datev-mcp
 
 MCP server that automates data entry in DATEV LODAS (a Windows payroll
-desktop app with no API) via a computer-use model. See [arch.md](../arch.md)
-for the full design rationale — this file is the practical how-to-run.
+desktop app with no API) via a computer-use model.
 
 An orchestrator LLM calls the MCP tools below with structured input; this
 server validates it, drives a computer-use session against the live DATEV
