@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<title>DATEV LODAS — Payroll (Mock)</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    font-size: 13px;
+    background: #ece9d8;
+    color: #000;
+    user-select: none;
+  }
+  /* ---- title bar ---- */
+  .titlebar {
+    background: linear-gradient(#3f6fb0, #2a4d80);
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .titlebar .win-controls span {
+    display: inline-block;
+    width: 22px; height: 18px;
+    background: #d8d4c4;
+    border: 1px solid #888;
+    text-align: center;
+    line-height: 18px;
+    margin-left: 3px;
+    color: #333;
+    font-weight: normal;
+  }
+  /* ---- menu / toolbar ---- */
+  .menubar {
+    background: #f0eee4;
+    border-bottom: 1px solid #b8b5a5;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333;
+  }
+  .toolbar {
+    background: #ece9d8;
+    border-bottom: 1px solid #b8b5a5;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .toolbar label { font-weight: bold; }
+  .toolbar input[type=text] {
+    width: 100px;
+    padding: 3px 5px;
+    border: 1px solid #7a96a3;
+  }
+  .toolbar select {
+    padding: 3px 5px;
+    border: 1px solid #7a96a3;
+  }
+  .toolbar button {
+    padding: 4px 12px;
+    border: 1px solid #7a7a6a;
+    background: linear-gradient(#fefefe, #dedbc9);
+    cursor: pointer;
+  }
+  .toolbar button:hover { background: #f5f2df; }
+
+  /* ---- layout ---- */
+  .main {
+    display: flex;
+    height: calc(100% - 96px);
+  }
+  .no-employee {
+    color: #777;
+    padding: 40px;
+    text-align: center;
+    font-style: italic;
+    flex: 1;
+  }
+
+  /* ---- tree nav ---- */
+  .tree-pane {
+    width: 300px;
+    flex-shrink: 0;
+    background: #f7f6ef;
+    border-right: 1px solid #b8b5a5;
+    overflow-y: auto;
+  }
+  .tree-pane h3 {
+    margin: 0;
+    padding: 6px 10px;
+    background: #dcd8c4;
+    font-size: 12px;
+    border-bottom: 1px solid #b8b5a5;
+  }
+  .tree-node-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tree-node-label:hover { background: #dce8f7; }
+  .tree-node-label.active { background: #3f6fb0; color: #fff; }
+  .tree-node-label.disabled { cursor: default; color: #888; }
+  .tree-node-label.disabled:hover { background: transparent; }
+  .tree-caret {
+    width: 10px;
+    display: inline-block;
+    font-size: 9px;
+    color: #555;
+    text-align: center;
+  }
+  .tree-node-label.active .tree-caret { color: #fff; }
+  .tree-icon { width: 14px; display: inline-block; text-align: center; }
+
+  .content {
+    flex: 1;
+    padding: 14px 18px;
+    overflow-y: auto;
+  }
+  .breadcrumb {
+    font-size: 11px;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  .emp-header {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  .emp-sub {
+    color: #555;
+    margin-bottom: 14px;
+    font-size: 12px;
+  }
+
+  .panel { display: none; max-width: 620px; }
+  .panel.active { display: block; }
+
+  .field-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .field-row label {
+    width: 260px;
+    flex-shrink: 0;
+    font-size: 13px;
+  }
+  .field-row input[type=text],
+  .field-row input[type=number],
+  .field-row select {
+    width: 160px;
+    padding: 4px 6px;
+    border: 1px solid #7a96a3;
+    background: #fff;
+    font-size: 13px;
+  }
+  .field-row input[readonly] { background: #f0f0e8; color: #555; }
+  .field-row .suffix { margin-left: 6px; color: #555; }
+  .field-row input[type=checkbox] { width: 16px; height: 16px; flex-shrink: 0; }
+
+  /* checkbox-first rows, matching the real Fahrtkostenzuschuss screen */
+  .checkbox-row {
+    align-items: flex-start;
+  }
+  .checkbox-row label {
+    width: auto;
+    margin-left: 8px;
+    font-weight: normal;
+    line-height: 1.35;
+  }
+
+  .radio-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .radio-inline {
+    width: auto !important;
+    font-weight: normal !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .radio-inline input[type=radio] { width: 14px; height: 14px; }
+
+  .section-title {
+    font-weight: bold;
+    color: #2a4d80;
+    margin: 18px 0 12px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #d8d4c4;
+  }
+  .section-title:first-child { margin-top: 4px; }
+
+  .actions {
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid #d8d4c4;
+    display: flex;
+    gap: 8px;
+  }
+  .actions button {
+    padding: 6px 18px;
+    border: 1px solid #7a7a6a;
+    background: linear-gradient(#fefefe, #dedbc9);
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .actions button.primary {
+    background: linear-gradient(#5b9bd5, #3f6fb0);
+    color: #fff;
+    border-color: #2a4d80;
+    font-weight: bold;
+  }
+  .actions button:hover { filter: brightness(1.05); }
+
+  .placeholder-msg {
+    color: #777;
+    font-style: italic;
+    padding: 20px 0;
+  }
+
+  /* ---- status bar ---- */
+  .statusbar {
+    background: #ece9d8;
+    border-top: 1px solid #b8b5a5;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #444;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* ---- modal ---- */
+  .overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .overlay.show { display: flex; }
+  .dialog {
+    background: #ece9d8;
+    border: 1px solid #7a7a6a;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.4);
+    min-width: 320px;
+  }
+  .dialog .dialog-title {
+    background: linear-gradient(#3f6fb0, #2a4d80);
+    color: #fff;
+    padding: 6px 10px;
+    font-weight: bold;
+    font-size: 13px;
+  }
+  .dialog .dialog-body {
+    padding: 20px 18px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .dialog .dialog-actions {
+    padding: 10px 18px 16px;
+    text-align: right;
+  }
+  .dialog .dialog-actions button {
+    padding: 5px 20px;
+    border: 1px solid #7a7a6a;
+    background: linear-gradient(#fefefe, #dedbc9);
+    cursor: pointer;
+  }
+  .flash {
+    color: #7a1f1f;
+    font-size: 12px;
+    margin-top: -4px;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <span>DATEV LODAS — Payroll (Test Environment / Mock)</span>
+  <span class="win-controls"><span>_</span><span>▢</span><span>✕</span></span>
+</div>
+<div class="menubar">File &nbsp; Edit &nbsp; Employee &nbsp; Master Data &nbsp; Reports &nbsp; Window &nbsp; Help</div>
+<div class="toolbar">
+  <label for="search-input">Personnel number:</label>
+  <input type="text" id="search-input" placeholder="e.g. 4711" />
+  <button onclick="searchEmployee()">Search</button>
+  <select id="emp-select" onchange="if(this.value) openEmployee(this.value)">
+    <option value="">— Select employee —</option>
+  </select>
+  <span id="search-flash" class="flash" style="margin:0;"></span>
+</div>
+
+<div class="main" id="main">
+  <div class="no-employee" id="no-employee">
+    No employee open.<br>
+    Please enter a personnel number and click "Search",<br>
+    or select an employee from the list.
+  </div>
+
+  <div class="tree-pane" id="tree-pane" style="display:none;"></div>
+
+  <div class="content" id="content" style="display:none;">
+    <div class="emp-header" id="emp-name"></div>
+    <div class="emp-sub" id="emp-sub"></div>
+    <div class="breadcrumb" id="breadcrumb"></div>
+
+    <!-- Commute panel: Home/Workplace (Wohnung/Tätigkeitsstätte) -->
+    <div class="panel" id="panel-commute">
+      <div class="section-title">Home/Workplace</div>
+      <div class="field-row">
+        <label for="c-distance">One-way distance</label>
+        <input type="number" id="c-distance" min="1" max="999" />
+        <span class="suffix">km</span>
+      </div>
+      <div class="field-row">
+        <label for="c-workdays">Working days per month</label>
+        <input type="number" id="c-workdays" min="1" max="31" />
+      </div>
+      <div class="field-row">
+        <label for="c-frequency">Usage frequency</label>
+        <select id="c-frequency">
+          <option value="regularly">Regularly</option>
+          <option value="occasionally">Occasionally</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="c-end">Usage end date</label>
+        <input type="text" id="c-end" placeholder="MM/YYYY" />
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="c-flatrate" />
+        <label for="c-flatrate">Flat-rate taxation</label>
+      </div>
+    </div>
+
+    <!-- Travel subsidy panel: Commute Allowance (Fahrtkostenzuschuss, matches live DATEV screen) -->
+    <div class="panel" id="panel-subsidy">
+      <div class="section-title">Commute Allowance (Cash Benefit):</div>
+      <div class="field-row">
+        <label for="s-cash">Commute allowance:</label>
+        <input type="number" id="s-cash" min="0" step="0.01" />
+        <span class="suffix">EUR</span>
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="s-pt-taxfree" />
+        <label for="s-pt-taxfree">For trips on public transport (tax-free from 01/2019)</label>
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="s-pt-flat-cash" />
+        <label for="s-pt-flat-cash">For trips on public transport, 25% flat rate (from 01/2020)</label>
+      </div>
+      <div class="field-row">
+        <label for="s-partial">Reduction for partial month/non-working month:</label>
+        <input type="text" id="s-partial" />
+      </div>
+
+      <div class="section-title">Job Ticket (Benefit in Kind):</div>
+      <div class="field-row">
+        <label for="s-jobticket">Job ticket (value of the non-cash benefit):</label>
+        <input type="number" id="s-jobticket" min="0" step="0.01" />
+        <span class="suffix">EUR</span>
+      </div>
+      <div class="field-row">
+        <label>Tax exemption under:</label>
+        <span class="radio-group">
+          <label class="radio-inline"><input type="radio" name="s-taxtreatment" id="s-tax-sachbezug" value="benefit_in_kind"> Benefit in kind</label>
+          <label class="radio-inline"><input type="radio" name="s-taxtreatment" id="s-tax-firmenrabatt" value="employer_discount"> Employer discount</label>
+        </span>
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="s-freigrenze" />
+        <label for="s-freigrenze">Benefit-in-kind exemption threshold exhausted/not applicable</label>
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="s-pt-flat-job" />
+        <label for="s-pt-flat-job">For trips on public transport, 25% flat rate (from 01/2020)</label>
+      </div>
+
+      <div class="section-title">Flat-Rate Taxation Details:</div>
+      <div class="field-row">
+        <label for="s-pauschalversteuerung">Flat-rate taxation method:</label>
+        <input type="text" id="s-pauschalversteuerung" />
+      </div>
+    </div>
+
+    <!-- Company car panel: Company Car/Company Car Provision (Firmenwagen/Firmenwagenüberlassung) -->
+    <div class="panel" id="panel-car">
+      <div class="section-title">Company Car/Company Car Provision</div>
+      <div class="field-row">
+        <label for="car-frequency">Usage frequency</label>
+        <select id="car-frequency">
+          <option value="regularly">Regularly</option>
+          <option value="occasionally">Occasionally</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="car-end">Usage end date</label>
+        <input type="text" id="car-end" placeholder="MM/YYYY" />
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="car-private" />
+        <label for="car-private">Private use</label>
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="car-commute" />
+        <label for="car-commute">Bill home-to-work trips</label>
+      </div>
+      <div class="field-row">
+        <label for="car-distance">Distance</label>
+        <input type="number" id="car-distance" min="1" max="999" />
+        <span class="suffix">km</span>
+      </div>
+      <div class="field-row">
+        <label for="car-workdays">Working days per month</label>
+        <input type="number" id="car-workdays" min="1" max="31" />
+      </div>
+      <div class="field-row">
+        <label for="car-trips">Trips per month (individual valuation)</label>
+        <input type="number" id="car-trips" min="0" />
+      </div>
+    </div>
+
+    <!-- Salary panel: Compensation > Salary (Festbezüge) -->
+    <div class="panel" id="panel-salary">
+      <div class="section-title">Salary</div>
+      <div class="field-row">
+        <label for="sal-iban">IBAN</label>
+        <input type="text" id="sal-iban" />
+      </div>
+      <div class="field-row">
+        <label for="sal-amount">Amount</label>
+        <input type="number" id="sal-amount" min="0" step="0.01" />
+        <span class="suffix">EUR</span>
+      </div>
+      <div class="field-row">
+        <label for="sal-cycle">Payment cycle</label>
+        <select id="sal-cycle">
+          <option value="monthly">Monthly</option>
+          <option value="one_time">One-time</option>
+          <option value="quarterly">Quarterly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <label for="sal-validfrom">Valid from</label>
+        <input type="text" id="sal-validfrom" placeholder="MM/YYYY" />
+      </div>
+      <div class="field-row">
+        <label for="sal-validuntil">Valid until</label>
+        <input type="text" id="sal-validuntil" placeholder="MM/YYYY" />
+      </div>
+      <div class="field-row checkbox-row">
+        <input type="checkbox" id="sal-partial" />
+        <label for="sal-partial">Reduce for partial month</label>
+      </div>
+    </div>
+
+    <!-- Placeholder panel for tree items with no implemented form -->
+    <div class="panel" id="panel-placeholder">
+      <div class="section-title" id="placeholder-title"></div>
+      <div class="placeholder-msg">This view is not implemented in this mock.</div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" onclick="saveRecord()">Save</button>
+      <button onclick="closeEmployee()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="statusbar">
+  <span id="status-left">Ready</span>
+  <span id="status-right">Client: 00815 — Test Company GmbH</span>
+</div>
+
+<div class="overlay" id="save-overlay">
+  <div class="dialog">
+    <div class="dialog-title">DATEV LODAS</div>
+    <div class="dialog-body" id="save-dialog-text">Data has been saved.</div>
+    <div class="dialog-actions">
+      <button onclick="closeOverlay()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------
+// In-memory "database" — seeded with two sample employees. Persisted to
+// localStorage so a saved change survives a page reload during testing.
+// Employee 4712 is pre-filled to resemble the reference DATEV screenshot
+// (job ticket 46.55 EUR, benefit in kind, public-transport 25% flat rate
+// on the benefit-in-kind side).
+//
+// This page is an English translation of the German DATEV LODAS mock —
+// labels and values here (e.g. "regularly"/"occasionally") no longer match
+// the German text the production MCP tools (tools/commute.py,
+// tools/travel_subsidy.py) instruct the computer-use model to look for, so
+// live automated runs against this page will not find matching on-screen
+// text unless those goal prompts are updated too.
+// ---------------------------------------------------------------------
+const DEFAULT_DB = {
+  "4711": {
+    name: "John Doe",
+    sub: "Personnel number 4711 — Sales Department",
+    commute: { distance: 18, workdays: 20, frequency: "regularly", end: "", flatrate: false },
+    subsidy: {
+      cash: 0, ptTaxFree: false, ptFlatCash: false,
+      partial: "Reduce partial month/Reduce non-working month",
+      jobticket: 0, taxtreatment: "benefit_in_kind", freigrenze: false, ptFlatJob: false,
+      pauschalversteuerung: "Distance allowance",
+    },
+    car: { frequency: "regularly", end: "", private: false, commute: false, distance: null, workdays: null, trips: null },
+    salary: { iban: "DE89370400440532013000", amount: 3200, cycle: "monthly", validfrom: "01/2024", validuntil: "", partial: false },
+  },
+  "4712": {
+    name: "Jane Sample",
+    sub: "Personnel number 4712 — Administration Department",
+    commute: { distance: 32, workdays: 22, frequency: "regularly", end: "", flatrate: true },
+    subsidy: {
+      cash: 0, ptTaxFree: false, ptFlatCash: false,
+      partial: "Reduce partial month/Reduce non-working month",
+      jobticket: 46.55, taxtreatment: "benefit_in_kind", freigrenze: false, ptFlatJob: true,
+      pauschalversteuerung: "Distance allowance",
+    },
+    car: { frequency: "occasionally", end: "", private: true, commute: false, distance: null, workdays: null, trips: 6 },
+    salary: { iban: "DE02120300000000202051", amount: 4100, cycle: "monthly", validfrom: "03/2023", validuntil: "", partial: false },
+  },
+};
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem("datev_mock_db");
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_DB));
+}
+function saveDB() {
+  localStorage.setItem("datev_mock_db", JSON.stringify(DB));
+}
+
+let DB = loadDB();
+let currentEmp = null;
+let currentPanel = null;
+
+// ---------------------------------------------------------------------
+// Left-hand navigation tree, matching the real DATEV LODAS structure
+// (Bewegungsdaten/Transaction Data, Personaldaten/Personnel Data,
+// Entlohnung/Compensation, ...). Leaves with a `panel` are implemented;
+// the rest render a placeholder message so the tree looks and navigates
+// like the real one. Placement of "Home/Workplace" under Personnel Data
+// is an assumption — it wasn't visible in the reference screenshot,
+// unlike Commute Allowance and Company Car/Company Car Provision, which
+// are shown exactly as-is (just translated).
+// ---------------------------------------------------------------------
+const TREE = [
+  { id: "bewegungsdaten", label: "Transaction Data" },
+  {
+    id: "personaldaten-root", label: "Personnel Data", expanded: true,
+    children: [
+      { id: "schnellerfassung", label: "Quick Entry" },
+      { id: "wohnung", label: "Home/Workplace", panel: "commute" },
+      { id: "personaldaten-leaf", label: "Personnel Data" },
+      { id: "beschaeftigung", label: "Employment" },
+      { id: "steuer", label: "Tax" },
+      { id: "sozialversicherung", label: "Social Insurance" },
+      {
+        id: "entlohnung", label: "Compensation", expanded: true,
+        children: [
+          { id: "festbezuege", label: "Salary", panel: "salary" },
+          { id: "entgelttabellen", label: "Wage Tables" },
+          { id: "besoldungstabellen", label: "Salary Scales" },
+          { id: "gehaltstabellen", label: "Salary Tables" },
+          { id: "lohntabellen", label: "Wage Rate Tables" },
+          { id: "monatslohn", label: "Monthly Wage" },
+          { id: "netto", label: "Net Additions/Net Deductions" },
+          { id: "mindestlohn", label: "Minimum Wage" },
+          { id: "vwl", label: "Capital-Forming Benefits" },
+          { id: "bav", label: "Company Pension" },
+          { id: "pfaendung", label: "Wage Garnishment" },
+          { id: "firmenwagen", label: "Company Car/Company Car Provision", panel: "car" },
+          { id: "fahrtkosten", label: "Commute Allowance", panel: "subsidy" },
+          { id: "entgeltkomponenten", label: "Pay Components" },
+        ],
+      },
+    ],
+  },
+];
+
+function findNode(nodes, id) {
+  for (const n of nodes) {
+    if (n.id === id) return n;
+    if (n.children) {
+      const found = findNode(n.children, id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function breadcrumbFor(nodes, id, trail) {
+  for (const n of nodes) {
+    const next = [...trail, n.label];
+    if (n.id === id) return next;
+    if (n.children) {
+      const found = breadcrumbFor(n.children, id, next);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function renderTreeNodes(nodes, depth) {
+  let html = "";
+  for (const n of nodes) {
+    const hasChildren = !!n.children;
+    const caret = hasChildren ? (n.expanded ? "▾" : "▸") : "";
+    const icon = hasChildren ? "📁" : "📄";
+    const isLeafPanel = !!n.panel;
+    const activeClass = n.id === currentPanel ? " active" : "";
+    const disabledClass = !hasChildren && !isLeafPanel ? " disabled" : "";
+    html += `<div class="tree-node-label${activeClass}${disabledClass}" style="padding-left:${8 + depth * 16}px" onclick="onTreeClick('${n.id}')">
+      <span class="tree-caret">${caret}</span><span class="tree-icon">${icon}</span><span>${n.label}</span>
+    </div>`;
+    if (hasChildren && n.expanded) {
+      html += renderTreeNodes(n.children, depth + 1);
+    }
+  }
+  return html;
+}
+
+function renderTree() {
+  document.getElementById("tree-pane").innerHTML =
+    `<h3>Sections</h3>${renderTreeNodes(TREE, 0)}`;
+}
+
+function onTreeClick(id) {
+  const node = findNode(TREE, id);
+  if (!node) return;
+  if (node.children) {
+    node.expanded = !node.expanded;
+    renderTree();
+    return;
+  }
+  currentPanel = id;
+  renderTree();
+
+  document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+  if (node.panel) {
+    document.getElementById("panel-" + node.panel).classList.add("active");
+  } else {
+    document.getElementById("placeholder-title").textContent = node.label;
+    document.getElementById("panel-placeholder").classList.add("active");
+  }
+
+  const crumb = breadcrumbFor(TREE, id, []);
+  document.getElementById("breadcrumb").textContent = crumb ? crumb.join(" > ") : "";
+}
+
+function renderEmpSelect() {
+  const sel = document.getElementById("emp-select");
+  sel.innerHTML = '<option value="">— Select employee —</option>';
+  Object.keys(DB).forEach((num) => {
+    const opt = document.createElement("option");
+    opt.value = num;
+    opt.textContent = `${num} — ${DB[num].name}`;
+    if (num === currentEmp) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function searchEmployee() {
+  const num = document.getElementById("search-input").value.trim();
+  const flash = document.getElementById("search-flash");
+  if (!DB[num]) {
+    flash.textContent = "Employee not found.";
+    return;
+  }
+  flash.textContent = "";
+  openEmployee(num);
+}
+
+function openEmployee(num) {
+  currentEmp = num;
+  const emp = DB[num];
+
+  document.getElementById("no-employee").style.display = "none";
+  document.getElementById("tree-pane").style.display = "block";
+  document.getElementById("content").style.display = "block";
+  document.getElementById("emp-name").textContent = emp.name;
+  document.getElementById("emp-sub").textContent = emp.sub;
+  document.getElementById("status-left").textContent = `Open: ${num} — ${emp.name}`;
+
+  document.getElementById("c-distance").value = emp.commute.distance;
+  document.getElementById("c-workdays").value = emp.commute.workdays;
+  document.getElementById("c-frequency").value = emp.commute.frequency;
+  document.getElementById("c-end").value = emp.commute.end;
+  document.getElementById("c-flatrate").checked = emp.commute.flatrate;
+
+  document.getElementById("s-cash").value = emp.subsidy.cash;
+  document.getElementById("s-pt-taxfree").checked = emp.subsidy.ptTaxFree;
+  document.getElementById("s-pt-flat-cash").checked = emp.subsidy.ptFlatCash;
+  document.getElementById("s-partial").value = emp.subsidy.partial;
+  document.getElementById("s-jobticket").value = emp.subsidy.jobticket;
+  document.getElementById("s-tax-sachbezug").checked = emp.subsidy.taxtreatment === "benefit_in_kind";
+  document.getElementById("s-tax-firmenrabatt").checked = emp.subsidy.taxtreatment === "employer_discount";
+  document.getElementById("s-freigrenze").checked = emp.subsidy.freigrenze;
+  document.getElementById("s-pt-flat-job").checked = emp.subsidy.ptFlatJob;
+  document.getElementById("s-pauschalversteuerung").value = emp.subsidy.pauschalversteuerung;
+
+  document.getElementById("car-frequency").value = emp.car.frequency;
+  document.getElementById("car-end").value = emp.car.end;
+  document.getElementById("car-private").checked = emp.car.private;
+  document.getElementById("car-commute").checked = emp.car.commute;
+  document.getElementById("car-distance").value = emp.car.distance ?? "";
+  document.getElementById("car-workdays").value = emp.car.workdays ?? "";
+  document.getElementById("car-trips").value = emp.car.trips ?? "";
+
+  document.getElementById("sal-iban").value = emp.salary.iban;
+  document.getElementById("sal-amount").value = emp.salary.amount;
+  document.getElementById("sal-cycle").value = emp.salary.cycle;
+  document.getElementById("sal-validfrom").value = emp.salary.validfrom;
+  document.getElementById("sal-validuntil").value = emp.salary.validuntil;
+  document.getElementById("sal-partial").checked = emp.salary.partial;
+
+  renderEmpSelect();
+  renderTree();
+  onTreeClick("wohnung");
+}
+
+function closeEmployee() {
+  currentEmp = null;
+  currentPanel = null;
+  document.getElementById("no-employee").style.display = "block";
+  document.getElementById("tree-pane").style.display = "none";
+  document.getElementById("content").style.display = "none";
+  document.getElementById("status-left").textContent = "Ready";
+  document.getElementById("search-input").value = "";
+  renderEmpSelect();
+}
+
+function saveRecord() {
+  if (!currentEmp) return;
+  const emp = DB[currentEmp];
+
+  emp.commute = {
+    distance: Number(document.getElementById("c-distance").value),
+    workdays: Number(document.getElementById("c-workdays").value),
+    frequency: document.getElementById("c-frequency").value,
+    end: document.getElementById("c-end").value.trim(),
+    flatrate: document.getElementById("c-flatrate").checked,
+  };
+  emp.subsidy = {
+    cash: Number(document.getElementById("s-cash").value) || 0,
+    ptTaxFree: document.getElementById("s-pt-taxfree").checked,
+    ptFlatCash: document.getElementById("s-pt-flat-cash").checked,
+    partial: document.getElementById("s-partial").value.trim(),
+    jobticket: Number(document.getElementById("s-jobticket").value) || 0,
+    taxtreatment: document.getElementById("s-tax-firmenrabatt").checked ? "employer_discount" : "benefit_in_kind",
+    freigrenze: document.getElementById("s-freigrenze").checked,
+    ptFlatJob: document.getElementById("s-pt-flat-job").checked,
+    pauschalversteuerung: document.getElementById("s-pauschalversteuerung").value.trim(),
+  };
+  emp.car = {
+    frequency: document.getElementById("car-frequency").value,
+    end: document.getElementById("car-end").value.trim(),
+    private: document.getElementById("car-private").checked,
+    commute: document.getElementById("car-commute").checked,
+    distance: document.getElementById("car-distance").value ? Number(document.getElementById("car-distance").value) : null,
+    workdays: document.getElementById("car-workdays").value ? Number(document.getElementById("car-workdays").value) : null,
+    trips: document.getElementById("car-trips").value ? Number(document.getElementById("car-trips").value) : null,
+  };
+  emp.salary = {
+    iban: document.getElementById("sal-iban").value.trim(),
+    amount: Number(document.getElementById("sal-amount").value) || 0,
+    cycle: document.getElementById("sal-cycle").value,
+    validfrom: document.getElementById("sal-validfrom").value.trim(),
+    validuntil: document.getElementById("sal-validuntil").value.trim(),
+    partial: document.getElementById("sal-partial").checked,
+  };
+
+  saveDB();
+
+  document.getElementById("save-dialog-text").textContent =
+    `Data for ${emp.name} (${currentEmp}) has been saved.`;
+  document.getElementById("save-overlay").classList.add("show");
+}
+
+function closeOverlay() {
+  document.getElementById("save-overlay").classList.remove("show");
+}
+
+// init
+renderEmpSelect();
+document.getElementById("search-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") searchEmployee();
+});
+</script>
+
+</body>
+</html>
